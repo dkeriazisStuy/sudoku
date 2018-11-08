@@ -118,7 +118,3 @@ venv.bak/
 # Filenames with special characters
 **/*[\\/\:;*?!'"<>|$º•¶§∞¢£]*
 
-# Boards
-board.txt
-boards.txt
-
