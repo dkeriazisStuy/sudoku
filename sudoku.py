@@ -67,7 +67,7 @@ class Board:
     def valid_cell(self, x, y):
         return self.valid_row(y) \
                 and self.valid_col(x) \
-                and self.valid_block(x // 3, y // 333)
+                and self.valid_block(x // 3, y // 3)
 
 
 def solve(board):
