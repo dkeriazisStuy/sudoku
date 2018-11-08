@@ -102,13 +102,35 @@ def str_to_board(board_str):
 
 
 def main():
-    #  _, in_file, out_file = sys.argv
-    #  boards = read_file(in_file)
-    board_str = read_file('board.txt')
-    board = str_to_board(board_str)
-    print(board)
-    result = solve(board)
-    print(result)
+    boards_str = read_file('boards.txt').split('\n\n')
+    boards_unsolved = {}
+    boards_solved = {}
+    for board_data in boards_str:
+        meta = board_data.split('\n')[0]
+        board_str = '\n'.join(board_data.split('\n')[1:])
+        board = str_to_board(board_str)
+        _, name, status = meta.split(',')
+        if status == 'solved':
+            boards_solved[name] = board
+        else:
+            boards_unsolved[name] = board
+    for name in boards_solved:
+        if name not in boards_unsolved:
+            continue
+        board = boards_unsolved[name]
+        solution = solve(board)
+        if solution.rows == boards_solved[name].rows:
+            print('Passed {name}'.format(name=name))
+        else:
+            print('Failed {name}'.format(name=name))
+    for name in boards_unsolved:
+        if name in boards_solved:
+            continue  # Ignore already-solved boards
+        board = boards_unsolved[name]
+        solution = solve(board)
+        print(name)
+        print(board)
+        print(solution)
 
 
 if __name__ == "__main__":
