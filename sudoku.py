@@ -121,7 +121,6 @@ def gen_board(num_blank):
             return result
 
 
-
 def str_to_board(board_str):
     rows_str = board_str.strip().split('\n')
     rows = []
