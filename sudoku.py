@@ -127,7 +127,6 @@ def main():
             print('Passed {name}'.format(name=name))
         else:
             print('Failed {name}'.format(name=name))
-    print()
     for name in boards_unsolved:
         if name in boards_solved:
             continue  # Ignore already-solved boards
