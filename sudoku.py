@@ -139,6 +139,8 @@ def str_to_board(board_str):
 def main():
     board = gen_board(54)
     print(board)
+    solution = solve(board)
+    print(solution)
 
 
 if __name__ == "__main__":
