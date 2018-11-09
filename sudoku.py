@@ -70,6 +70,8 @@ class Board:
                 and self.valid_block(x // 3, y // 3)
 
 
+backtracks = 0
+
 def solve(board):
     x, y = board.get_first_unfilled()
     if x is None or y is None:
@@ -84,6 +86,8 @@ def solve(board):
             continue
         else:
             return result
+    global backtracks
+    backtracks += 1
     return None
 
 
@@ -123,12 +127,16 @@ def main():
             print('Passed {name}'.format(name=name))
         else:
             print('Failed {name}'.format(name=name))
+    print()
     for name in boards_unsolved:
         if name in boards_solved:
             continue  # Ignore already-solved boards
         board = boards_unsolved[name]
+        global backtracks
+        backtracks = 0
         solution = solve(board)
         print(name)
+        print('Backtracked {num} times'.format(num=backtracks))
         print(board)
         print(solution)
 
