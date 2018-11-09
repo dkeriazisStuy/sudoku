@@ -1,4 +1,5 @@
 import sys
+import random
 
 
 def read_file(filename):
@@ -49,6 +50,9 @@ class Board:
                     return x, y
         return None, None
 
+    def get_cell(self, x, y):
+        return self.rows[y][x]
+
     def set_cell(self, x, y, n):
         self.rows[y][x] = n
 
@@ -75,7 +79,9 @@ def solve(board):
     if x is None or y is None:
         return board
     new_board = board.copy()
-    for n in range(1, 10):
+    nums = list(range(1, 10))
+    random.shuffle(nums)
+    for n in nums:
         new_board.set_cell(x, y, n)
         if not new_board.valid_cell(x, y):
             continue
@@ -85,6 +91,35 @@ def solve(board):
         else:
             return result
     return None
+
+
+def rand_board():
+    row = [None for _ in range(9)]
+    return solve(Board([row for _ in range(9)]))
+
+
+def remove_rand(board):
+    result = None
+    while result is None:
+        x = random.randrange(9)
+        y = random.randrange(9)
+        result = board.get_cell(x, y)
+    board.set_cell(x, y, None)
+
+
+def gen_board(num_blank):
+    if num_blank == 0:
+        return rand_board()
+    else:
+        result = None
+        while result is None:
+            result = gen_board(num_blank - 1)
+        remove_rand(result)
+        if solve(result) is None:
+            return None
+        else:
+            return result
+
 
 
 def str_to_board(board_str):
@@ -102,35 +137,8 @@ def str_to_board(board_str):
 
 
 def main():
-    boards_str = read_file('boards.txt').split('\n\n')
-    boards_unsolved = {}
-    boards_solved = {}
-    for board_data in boards_str:
-        meta = board_data.split('\n')[0]
-        board_str = '\n'.join(board_data.split('\n')[1:])
-        board = str_to_board(board_str)
-        _, name, status = meta.split(',')
-        if status == 'solved':
-            boards_solved[name] = board
-        else:
-            boards_unsolved[name] = board
-    for name in boards_solved:
-        if name not in boards_unsolved:
-            continue
-        board = boards_unsolved[name]
-        solution = solve(board)
-        if solution.rows == boards_solved[name].rows:
-            print('Passed {name}'.format(name=name))
-        else:
-            print('Failed {name}'.format(name=name))
-    for name in boards_unsolved:
-        if name in boards_solved:
-            continue  # Ignore already-solved boards
-        board = boards_unsolved[name]
-        solution = solve(board)
-        print(name)
-        print(board)
-        print(solution)
+    board = gen_board(54)
+    print(board)
 
 
 if __name__ == "__main__":
