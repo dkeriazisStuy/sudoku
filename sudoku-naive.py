@@ -1,9 +1,15 @@
+#!/usr/bin/python3
 import sys
 
 
 def read_file(filename):
     with open(filename) as f:
         return f.read()
+
+
+def write_file(filename, s):
+    with open(filename, 'w') as f:
+        return f.write(s)
 
 
 class Board:
@@ -20,7 +26,8 @@ class Board:
                     result += '_'
                 else:
                     result += str(cell)
-                result += ' '
+                result += ','
+            result = result[:-1]
             result += '\n'
         return result
 
@@ -102,35 +109,20 @@ def str_to_board(board_str):
 
 
 def main():
-    boards_str = read_file('boards.txt').split('\n\n')
-    boards_unsolved = {}
-    boards_solved = {}
-    for board_data in boards_str:
-        meta = board_data.split('\n')[0]
-        board_str = '\n'.join(board_data.split('\n')[1:])
+    _, board_list_file, out_file, board_header = sys.argv
+    board_str_list = read_file(board_list_file).strip().split('\n\n')
+    boards = {}
+    for board_data in board_str_list:
+        header = board_data.split('\n')[0]
+        board_str = '\n'.join(board_data.split('\n')[1:])  # Strip header
         board = str_to_board(board_str)
-        _, name, status = meta.split(',')
-        if status == 'solved':
-            boards_solved[name] = board
-        else:
-            boards_unsolved[name] = board
-    for name in boards_solved:
-        if name not in boards_unsolved:
-            continue
-        board = boards_unsolved[name]
-        solution = solve(board)
-        if solution.rows == boards_solved[name].rows:
-            print('Passed {name}'.format(name=name))
-        else:
-            print('Failed {name}'.format(name=name))
-    for name in boards_unsolved:
-        if name in boards_solved:
-            continue  # Ignore already-solved boards
-        board = boards_unsolved[name]
-        solution = solve(board)
-        print(name)
-        print(board)
-        print(solution)
+        boards[header] = board
+    puzzle = boards[board_header]
+    solution = solve(puzzle)
+    start, name, _ = board_header.split(',')
+    result_header = '{start},{name},solved'.format(start=start, name=name)
+    output_str = result_header + '\n' + str(solution)
+    write_file(out_file, output_str)
 
 
 if __name__ == "__main__":
